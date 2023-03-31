@@ -838,6 +838,12 @@
 
         self.settings = {};
 
+        Selectize.instanceId = Selectize.instanceId || 0;
+        Selectize.instanceCount = Selectize.instanceCount || 0;
+
+        ++Selectize.instanceId; // keep this unique for each individual instance!
+        ++Selectize.instanceCount; // use this to keep track of the number of instances!
+
         $.extend(self, {
             order: 0,
             settings: settings,
@@ -846,7 +852,7 @@
             tagType: input.tagName.toLowerCase() === 'select' ? TAG_SELECT : TAG_INPUT,
             rtl: /rtl/i.test(dir),
 
-            eventNS: '.selectize' + (++Selectize.count),
+            eventNS: '.selectize' + Selectize.instanceId,
             highlightedValue: null,
             isBlurring: false,
             isOpen: false,
@@ -1410,7 +1416,6 @@
                 e && e.preventDefault();
                 return false;
             }
-
             if (self.ignoreFocus) return;
             self.isFocused = true;
             if (self.settings.preload === 'focus') self.onSearchChange('');
@@ -2018,7 +2023,6 @@
 
         clearOptions: function (silent) {
             var self = this;
-
             self.loadedSearches = {};
             self.userOptions = {};
             self.renderCache = {};
@@ -2698,7 +2702,7 @@
             self.$control_input.removeData('grow');
             self.$input.removeData('selectize');
 
-            if (--Selectize.count == 0 && Selectize.$testInput) {
+            if (--Selectize.instanceCount == 0 && Selectize.$testInput) {
                 Selectize.$testInput.remove();
                 Selectize.$testInput = undefined;
             }
@@ -2775,7 +2779,9 @@
         }
     });
 
-    Selectize.count = 0;
+
+
+
     Selectize.defaults = {
         options: [],
         optgroups: [],
